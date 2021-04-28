@@ -1,0 +1,84 @@
+# Bash History Replacement Script
+#    Author: Caesar Kabalan
+#    Last Modified: June 6th, 2017
+# Description:
+#    Modifies the default Bash Shell prompt to be in the format of:
+#       [CWD:COUNT:BRANCH:VENV]
+#       [USER:HOSTNAME] _
+#    Where:
+#       CWD - Current working directory (green if last command returned 0, red otherwise)
+#       COUNT - Session command count
+#       BRANCH - Current git branch if in a git repository, omitted if not in a git repo
+#       VENV - Current Python Virtual Environment if set, omitted if not set
+#       USER - Current username
+#       HOSTNAME - System hostname
+#    Example:
+#       [~/projects/losteyelid:8:master:losteyelid]
+#       [ckabalan:spectralcoding] _
+# Installation:
+#    Add the following to one of the following files
+#       System-wide Prompt Change:
+#          /etc/profile.d/bash_prompt_custom.sh (new file)
+#          /etc/bashrc
+#       Single User Prompt Change:
+#          ~/.bashrc
+#          ~/.bash_profile
+
+#Color codes
+RED="\[\e[31m\]"
+BROWN="\[\e[33m\]"
+GREEN="\[\e[1;32m\]"
+YELLOW="\[\e[1;33m\]"
+RED_BOLD="\[\e[1;31m\]"
+BG_RED="\[\e[1;41m\]"
+BLUE="\[\e[1;34m\]"
+COLOR_NONE="\[\e[0m\]"
+
+
+function set_prompt_symbol () {
+  	if [ $? == 0 ]; then
+    	PROMPT_SYMBOL="\$"
+  	else
+    	PROMPT_SYMBOL="${RED}\$${COLOR_NONE}"
+  	fi
+}
+
+function set_python_venv () {
+	if ! test -z "$VIRTUAL_ENV" ; then
+		VENV_SYMBOL="${RED_BOLD}[`basename \"$VIRTUAL_ENV\"`]${COLOR_NONE}"
+	else
+		VENV_SYMBOL=""
+	fi
+}
+
+function set_user_host () {
+	if [ $UID == 0 ];then
+		USERHOST_SYMBOL="${BG_RED}\u@\h${COLOR_NONE}"
+	else
+		USERHOST_SYMBOL="${BLUE}\u@\h${COLOR_NONE}"
+	fi
+}
+
+function set_dir () {
+	DIR_SYMBOL="${GREEN}\w${COLOR_NONE}"
+}
+
+function set_git_branch() {
+  # Get the name of the branch.
+  branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/')
+  # Set the final branch string.
+  BRANCH_SYMBOL="${YELLOW}${branch}${COLOR_NONE} "
+}
+
+function set_bash_prompt () {
+	set_prompt_symbol
+	set_python_venv
+	set_user_host
+	set_dir
+	set_git_branch
+	
+	PS1="${USERHOST_SYMBOL} ${DIR_SYMBOL} ${BRANCH_SYMBOL}\n${VENV_SYMBOL}${PROMPT_SYMBOL}"
+}
+
+# Tell Bash to run the above function for every prompt
+export PROMPT_COMMAND=set_bash_prompt
