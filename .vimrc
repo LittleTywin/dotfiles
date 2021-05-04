@@ -1,46 +1,34 @@
-filetype plugin on
-filetype indent on
+syntax on
 
-set number
-set autoread
-au FocusGained,BufEnter * checktime
+filetype plugin indent on
 
-":W sudo save
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
-set wildmenu
-set wildignore=*.o,*~,*.pyc,*./git
+au WinLeave * set nocursorline nocursorcolumn
+au WinEnter * set cursorline cursorcolumn
 
-"Always show current position
-set ruler
+set cursorline 
 
-set cmdheight=2
-
-set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
-
+set incsearch
 set ignorecase
 set smartcase
 
-set incsearch
-
+set nocompatible
+set nofoldenable
+set confirm
+set backspace=indent,eol,start
+set mouse=a
+set report=0
+set nowrap
+set scrolloff=5
+set number
 set showmatch
-
-syntax enable
-
-set expandtab
-
-set smarttab
-
-set shiftwidth=4
-set tabstop=4
-
-set lbr
-set tw=500
-
-set ai
-set si
-set wrap
-
+set showcmd
+set title
 set laststatus=2
+set matchtime=6
 
-
+set autoindent
+set expandtab
+set smartindent
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
