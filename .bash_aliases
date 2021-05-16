@@ -1,1 +1,2 @@
-alias dotfiles='/usr/bin/git --git-dir=/home/dimitris/.dotfiles --work-tree=/home/dimitris'
+alias dotfiles='/usr/bin/git --git-dir=/home/jp/.dotfiles --work-tree=/home/jp'
+alias gs='git status'
